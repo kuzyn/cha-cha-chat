@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>cha-cha-cha</title>
+  </head>
+  <body>
+    <h1>let's dance the cha-cha</h1>
+    <!-- All of the Node.js APIs are available in this renderer process. -->
+    
+    <div class="">
+      <button id="binary-executable" type="file">binary path</button>
+      <span id="binary-executable-selected">no executable selected yet</span>
+    </div>
+    
+    <div class="">
+      <p>environment variables</p>
+      <input id="env-variable-name-1" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
+      <br>
+      <input id="env-variable-name-2" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
+      <br>
+      <input id="env-variable-name-3" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
+    </div>
+    
+    <div class="">
+      <button id="test-source" type="file">test file</button>
+      <span id="test-source-selected">no test file selected yet</span>
+    </div>
+    
+    <div class="">
+      <button id="result-source" type="file">result file</button>
+      <span id="result-source-selected">no result file selected yet</span>
+    </div>
+    
+    <div class="">
+      <label><input id="show-only-error" type="checkbox" value="first_checkbox">show only errors</label><br>
+    </div>
+    
+    <div class="controls">
+      <button id="control-start">start</button>
+    </div>
+    
+    <div class="output-console">
+      <h2>console</h2>
+    </div>
+    
+    <hr>
+    
+    <div class="output-returned">
+      <h2>returned</h2>
+    </div>
+    <div class="output-expected">
+      <h2>expected</h2>
+    </div>
+    
+  </body>
+
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+  </script>
+</html>

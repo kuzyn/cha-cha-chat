@@ -1,0 +1,17 @@
+{
+  "name": "cha-cha",
+  "version": "1.0.0",
+  "description": "Test runner for ChatScript",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^1.4.4",
+    "electron-reload": "^1.0.2"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC"
+}
