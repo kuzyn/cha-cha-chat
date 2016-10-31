@@ -6,7 +6,7 @@ const ipc = require('electron').ipcRenderer;
 
 let csConfigObject = {
     path: '',
-    login: 'test',
+    login: '',
     source: ''
 }
 
@@ -42,23 +42,41 @@ startBtn.addEventListener('click', function (event) {
 
 
 
-// listeners
+// listeners for paths
 ipc.on('binary-executable', function (event, path) {
   // do things with binary-executable
   csConfigObject.path = path;
-  document.getElementById(`binary-executable-selected`).innerHTML = `${path}`
+  document.getElementById(`binary-executable-selected`).innerHTML = `${csConfigObject.path}`;
 });
 
 ipc.on('test-source', function (event, path) {
   // do things with test-source
   csConfigObject.source = path;
-  document.getElementById(`test-source-selected`).innerHTML = `${path}`
+  document.getElementById(`test-source-selected`).innerHTML = `${csConfigObject.source}`;
 });
 
 ipc.on('result-source', function (event, path) {
   // do things with result-source
   resultSourcePath = path;
-  document.getElementById(`result-source-selected`).innerHTML = `${path}`
+  document.getElementById(`result-source-selected`).innerHTML = `${resultSourcePath}`;
 });
 
 
+// listener for cs outputs
+ipc.on('cs-binary-output', function (event, output) {
+  // do things with result-source
+  consoleOutput = output;
+  document.getElementById(`output-console`).innerHTML += `${consoleOutput}`;
+});
+
+
+// if we have a config file, use these values
+ipc.on('default-config-load', function (event, config) {
+  // do things with our configs
+  csConfigObject.path = config.path;
+  csConfigObject.source = config.source;
+  csConfigObject.login = config.login;
+  document.getElementById(`binary-executable-selected`).innerHTML = `${csConfigObject.path}`;
+  document.getElementById(`test-source-selected`).innerHTML = `${csConfigObject.source}`;
+  document.getElementById(`login-name`).value = `${csConfigObject.login}`;
+});

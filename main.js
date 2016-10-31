@@ -7,6 +7,8 @@ const ipc = require('electron').ipcMain;
 const dialog = require('electron').dialog;
 const execFile = require('child_process').exec;
 const os = require('os');
+const fs = require('fs');
+const config = require('./config.js');
 
 require('electron-reload')(__dirname);
 
@@ -22,7 +24,22 @@ function createWindow () {
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
+  
+  mainWindow.webContents.on('did-finish-load', () => {
+    // check if we have a proper config file in the local folder
+    try {
+      if (config.path && config.source && config.login) {
+        console.log(`config loaded: ${JSON.stringify(config)}`);
+        mainWindow.webContents.send('default-config-load', config);
+      } else {
+        throw new Error('empty field(s) in config.js');
+      }
+    } 
+    catch (e) {
+      console.log(`${e}`);
+    }
+  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -67,7 +84,9 @@ ipc.on('open-file-dialog', function (event, element) {
   }
   
   dialog.showOpenDialog(dialogOptions, function (files) {
-    if (files) event.sender.send(element, files)
+    if (files) {
+      event.sender.send(element, files);
+    }
   });
 })
 
@@ -79,8 +98,10 @@ ipc.on('control-start-process', function (event, options) {
     if (error) {
       throw error;
     }
-    console.log(stdout);
-    console.log(stderr);
+    if (stdout || stderr) {
+      let payload = stdout || stderr;
+      event.sender.send('cs-binary-output', payload);
+    }
   });
 })
 

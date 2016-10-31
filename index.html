@@ -9,17 +9,12 @@
     <!-- All of the Node.js APIs are available in this renderer process. -->
     
     <div class="">
-      <button id="binary-executable" type="file">binary path</button>
-      <span id="binary-executable-selected">no executable selected yet</span>
+      <label><input id="login-name" type="text" value="" placeholder="">cs login name</label><br>
     </div>
     
     <div class="">
-      <p>environment variables</p>
-      <input id="env-variable-name-1" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
-      <br>
-      <input id="env-variable-name-2" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
-      <br>
-      <input id="env-variable-name-3" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
+      <button id="binary-executable" type="file">binary path</button>
+      <span id="binary-executable-selected">no executable selected yet</span>
     </div>
     
     <div class="">
@@ -36,12 +31,24 @@
       <label><input id="show-only-error" type="checkbox" value="first_checkbox">show only errors</label><br>
     </div>
     
+    <div class="">
+      <p>environment variables</p>
+      <input id="env-variable-name-1" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
+      <br>
+      <input id="env-variable-name-2" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
+      <br>
+      <input id="env-variable-name-3" type="text" name="name" value=""><span> = </span><input id="env-variable-value-1" type="text" name="name" value="">
+    </div>
+    
     <div class="controls">
       <button id="control-start">start</button>
     </div>
     
-    <div class="output-console">
+    <div class="output-container">
       <h2>console</h2>
+      <div class="output-console">
+        (output)
+      </div>
     </div>
     
     <hr>
