@@ -99,8 +99,8 @@ ipc.on('control-start-process', function (event, options) {
       throw error;
     }
     if (stdout || stderr) {
-      let payload = stdout || stderr;
-      event.sender.send('cs-binary-output', payload);
+      let output = stdout || stderr;
+      event.sender.send('cs-binary-output', output);
     }
   });
 })

@@ -66,7 +66,7 @@ ipc.on('result-source', function (event, path) {
 ipc.on('cs-binary-output', function (event, output) {
   // do things with result-source
   consoleOutput = output;
-  document.getElementById(`output-console`).innerHTML += `${consoleOutput}`;
+  document.getElementById(`output-console`).innerHTML += `<p>${consoleOutput}</p>`;
 });
 
 
