@@ -1,17 +1,18 @@
 {
-  "name": "cha-cha",
-  "version": "1.0.0",
+  "name": "cha-cha-chat",
+  "version": "0.0.1",
   "description": "Test runner for ChatScript",
   "main": "main.js",
   "dependencies": {
     "electron": "^1.4.4",
-    "electron-reload": "^1.0.2"
+    "electron-reload": "^1.0.2",
+    "node-emoji": "^1.4.1"
   },
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {},
-  "author": "",
-  "license": "ISC"
+  "author": "kuzyn <hello@samuelcousin.com>",
+  "license": "MIT"
 }

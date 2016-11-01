@@ -3,7 +3,9 @@
 // All of the Node.js APIs are available in this process.
 
 const ipc = require('electron').ipcRenderer;
+var emoji = require('node-emoji');
 
+// config object
 let csConfigObject = {
     path: '',
     login: '',
@@ -18,15 +20,13 @@ const resultSrcBtn = document.getElementById('result-source');
 
 // controls
 const startBtn = document.getElementById('control-start');
-
-
 const openButtons = [binaryDirBtn, testSrcBtn, resultSrcBtn];
 
 
 
-
-
-// handlers
+///////////////
+// HANDLERs  //
+///////////////
 
 // select files btn clicks
 for (button of openButtons) {
@@ -75,21 +75,24 @@ ipc.on('cs-binary-output', (event, output) => {
 
 
 // if we have a config file, use these values
+// de facto init function
 ipc.on('default-config-load', (event, config) => {
   // do things with our configs
-  csConfigObject.path = config.path;
-  csConfigObject.source = config.source;
-  csConfigObject.login = config.login;
-  csConfigObject.env_variable = config.env_variable;
+  csConfigObject = config;
   document.getElementById(`binary-executable-selected`).innerHTML = `${csConfigObject.path}`;
   document.getElementById(`test-source-selected`).innerHTML = `${csConfigObject.source}`;
   document.getElementById(`login-name`).value = `${csConfigObject.login}`;
   getEnvVariableValues('env-variable-key', 'env-variable-value', 'set');
+  
+  document.getElementById(`logo`).innerHTML = emoji.emojify(':dancer: :dancer: :heart_eyes_cat:');
+
 });
 
 
 
-// helpers
+/////////////
+// HELPERS //
+/////////////
 
 // get or set all key/value of respective classes add them to csConfigObject.env_variable
 function getEnvVariableValues(classNameKey, classNameValue, operation) {
