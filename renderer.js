@@ -7,7 +7,8 @@ const ipc = require('electron').ipcRenderer;
 let csConfigObject = {
     path: '',
     login: '',
-    source: ''
+    source: '',
+    env_variable: {}
 }
 
 // open files
@@ -22,40 +23,43 @@ const startBtn = document.getElementById('control-start');
 const openButtons = [binaryDirBtn, testSrcBtn, resultSrcBtn];
 
 
+
+
+
 // handlers
 
 // select files btn clicks
 for (button of openButtons) {
-  button.addEventListener('click', function (event) {
+  button.addEventListener('click', (event) => {
     ipc.send('open-file-dialog', event.srcElement.id);
   });
 }
 
 // control clicks
-startBtn.addEventListener('click', function (event) {
+startBtn.addEventListener('click', (event) => {
   if (!csConfigObject.path || !csConfigObject.source) {
     ipc.send('open-error-dialog', 'You must select a binary and a source');
   } else {
+    getEnvVariableValues('env-variable-key', 'env-variable-value', 'get');
     ipc.send('control-start-process', csConfigObject);
   }
 });
 
 
-
 // listeners for paths
-ipc.on('binary-executable', function (event, path) {
+ipc.on('binary-executable', (event, path) => {
   // do things with binary-executable
   csConfigObject.path = path;
   document.getElementById(`binary-executable-selected`).innerHTML = `${csConfigObject.path}`;
 });
 
-ipc.on('test-source', function (event, path) {
+ipc.on('test-source', (event, path) => {
   // do things with test-source
   csConfigObject.source = path;
   document.getElementById(`test-source-selected`).innerHTML = `${csConfigObject.source}`;
 });
 
-ipc.on('result-source', function (event, path) {
+ipc.on('result-source', (event, path) => {
   // do things with result-source
   resultSourcePath = path;
   document.getElementById(`result-source-selected`).innerHTML = `${resultSourcePath}`;
@@ -63,7 +67,7 @@ ipc.on('result-source', function (event, path) {
 
 
 // listener for cs outputs
-ipc.on('cs-binary-output', function (event, output) {
+ipc.on('cs-binary-output', (event, output) => {
   // do things with result-source
   consoleOutput = output;
   document.getElementById(`output-console`).innerHTML += `<p>${consoleOutput}</p>`;
@@ -71,12 +75,53 @@ ipc.on('cs-binary-output', function (event, output) {
 
 
 // if we have a config file, use these values
-ipc.on('default-config-load', function (event, config) {
+ipc.on('default-config-load', (event, config) => {
   // do things with our configs
   csConfigObject.path = config.path;
   csConfigObject.source = config.source;
   csConfigObject.login = config.login;
+  csConfigObject.env_variable = config.env_variable;
   document.getElementById(`binary-executable-selected`).innerHTML = `${csConfigObject.path}`;
   document.getElementById(`test-source-selected`).innerHTML = `${csConfigObject.source}`;
   document.getElementById(`login-name`).value = `${csConfigObject.login}`;
+  getEnvVariableValues('env-variable-key', 'env-variable-value', 'set');
 });
+
+
+
+// helpers
+
+// get or set all key/value of respective classes add them to csConfigObject.env_variable
+function getEnvVariableValues(classNameKey, classNameValue, operation) {
+  let keys = document.getElementsByClassName(classNameKey);
+  let values = document.getElementsByClassName(classNameValue);
+  
+  // if we want to get our key/values
+  if (operation === 'get') {
+    // clear our object
+    csConfigObject.env_variable = {}
+    for (key of keys) {
+      for (value of values) {
+        if (key.dataset.variable === value.dataset.variable) {
+          if (key.value && value.value) {
+            csConfigObject.env_variable[key.value] = value.value;
+          }
+        }
+      }
+    }
+  }
+  
+  // if we want to set our key/values to our config values
+  if (operation === 'set') {
+    let object = csConfigObject.env_variable;
+    for (let variable in object) {
+      let counter = 0;
+      if (object.hasOwnProperty(variable) && object[variable]) {
+        keys[counter].value = variable;
+        values[counter].value = object[variable];
+        counter += 1;
+      }
+    }
+  }
+  
+}

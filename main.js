@@ -5,7 +5,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipc = require('electron').ipcMain;
 const dialog = require('electron').dialog;
-const execFile = require('child_process').exec;
+const child_process = require('child_process');
 const os = require('os');
 const fs = require('fs');
 const config = require('./config.js');
@@ -14,14 +14,14 @@ require('electron-reload')(__dirname);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 800, height: 600});
 
   // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`)
+  mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools()
@@ -46,21 +46,21 @@ function createWindow () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
+    mainWindow = null;
   })
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
 })
 
@@ -68,7 +68,7 @@ app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
-    createWindow()
+    createWindow();
   }
 })
 
@@ -93,19 +93,28 @@ ipc.on('open-file-dialog', function (event, element) {
 // listen for a start process request
 ipc.on('control-start-process', function (event, options) {
   console.log(options);
-  const fullCmd = `${options.path} local login=${options.login} source=${options.source}`
-  const child = execFile(fullCmd, [''], (error, stdout, stderr) => {
-    if (error) {
-      throw error;
+  
+  // first we set our env variable
+  let object = options.env_variable;
+  for (let variable in object) {
+    if (object.hasOwnProperty(variable)) {
+      process.env[variable] = object[variable];
     }
-    if (stdout || stderr) {
-      let output = stdout || stderr;
-      event.sender.send('cs-binary-output', output);
-    }
-  });
+  }
+  
+  // const fullCmd = `/Users/samuelcousin/Development/KoreNLP/BINARIES/MacChatScript local login=${options.login} livedata=/Users/samuelcousin/Development/KoreNLP/LIVEDATA users=/Users/samuelcousin/Development/KoreNLP/USERS logs=/Users/samuelcousin/Development/KoreNLP/LOGS source=${options.source}`;
+  // child_process.exec(fullCmd, [''], (error, stdout, stderr) => {
+  //   if (error) {
+  //     throw error;
+  //   }
+  //   if (stdout || stderr) {
+  //     let payload = stdout || stderr;
+  //     event.sender.send('cs-binary-output', payload);
+  //   }
+  // });
 })
 
 // listen for errors
 ipc.on('open-error-dialog', function (event, errorText) {
-  dialog.showErrorBox('Error', errorText)
+  dialog.showErrorBox('Error', errorText);
 })
