@@ -7,14 +7,14 @@ var emoji = require('node-emoji');
 
 // config object
 let csConfigObject = {
-    path: '',
+    root: '',
     login: '',
     source: '',
     env_variable: {}
 }
 
 // open files
-const binaryDirBtn = document.getElementById('binary-executable');
+const binaryDirBtn = document.getElementById('chatscript-root');
 const testSrcBtn = document.getElementById('test-source');
 const resultSrcBtn = document.getElementById('result-source');
 
@@ -37,8 +37,8 @@ for (button of openButtons) {
 
 // control clicks
 startBtn.addEventListener('click', (event) => {
-  if (!csConfigObject.path || !csConfigObject.source) {
-    ipc.send('open-error-dialog', 'You must select a binary and a source');
+  if (!csConfigObject.root || !csConfigObject.source) {
+    ipc.send('open-error-dialog', 'You must select a cs root and a source');
   } else {
     getEnvVariableValues('env-variable-key', 'env-variable-value', 'get');
     ipc.send('control-start-process', csConfigObject);
@@ -47,10 +47,10 @@ startBtn.addEventListener('click', (event) => {
 
 
 // listeners for paths
-ipc.on('binary-executable', (event, path) => {
-  // do things with binary-executable
+ipc.on('chatscript-root', (event, path) => {
+  // do things with chatscript-root
   csConfigObject.path = path;
-  document.getElementById(`binary-executable-selected`).innerHTML = `${csConfigObject.path}`;
+  document.getElementById(`chatscript-root-selected`).innerHTML = `${csConfigObject.path}`;
 });
 
 ipc.on('test-source', (event, path) => {
@@ -67,10 +67,15 @@ ipc.on('result-source', (event, path) => {
 
 
 // listener for cs outputs
-ipc.on('cs-binary-output', (event, output) => {
+ipc.on('cs-process-output', (event, output) => {
   // do things with result-source
-  consoleOutput = output;
-  document.getElementById(`output-console`).innerHTML += `<p>${consoleOutput}</p>`;
+  document.getElementById(`output-console`).innerHTML += `<pre>${output}</pre>`;
+});
+
+// listener for cs end
+ipc.on('cs-process-end', (event, code) => {
+  // do things with result-source
+  console.log(`process has ended with code ${code}`)
 });
 
 
@@ -79,7 +84,7 @@ ipc.on('cs-binary-output', (event, output) => {
 ipc.on('default-config-load', (event, config) => {
   // do things with our configs
   csConfigObject = config;
-  document.getElementById(`binary-executable-selected`).innerHTML = `${csConfigObject.path}`;
+  document.getElementById(`chatscript-root-selected`).innerHTML = `${csConfigObject.root}`;
   document.getElementById(`test-source-selected`).innerHTML = `${csConfigObject.source}`;
   document.getElementById(`login-name`).value = `${csConfigObject.login}`;
   getEnvVariableValues('env-variable-key', 'env-variable-value', 'set');

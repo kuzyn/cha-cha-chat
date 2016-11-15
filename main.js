@@ -5,7 +5,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipc = require('electron').ipcMain;
 const dialog = require('electron').dialog;
-const child_process = require('child_process');
+const exec = require('child_process').exec;
 const os = require('os');
 const fs = require('fs');
 const config = require('./config.js');
@@ -29,7 +29,7 @@ function createWindow () {
   mainWindow.webContents.on('did-finish-load', () => {
     // check if we have a proper config file in the local folder
     try {
-      if (config.path && config.source && config.login) {
+      if (config.root && config.source && config.login) {
         console.log(`config loaded: ${JSON.stringify(config)}`);
         mainWindow.webContents.send('default-config-load', config);
       } else {
@@ -102,16 +102,21 @@ ipc.on('control-start-process', function (event, options) {
     }
   }
   
-  // const fullCmd = `/Users/samuelcousin/Development/KoreNLP/BINARIES/MacChatScript local login=${options.login} livedata=/Users/samuelcousin/Development/KoreNLP/LIVEDATA users=/Users/samuelcousin/Development/KoreNLP/USERS logs=/Users/samuelcousin/Development/KoreNLP/LOGS source=${options.source}`;
-  // child_process.exec(fullCmd, [''], (error, stdout, stderr) => {
-  //   if (error) {
-  //     throw error;
-  //   }
-  //   if (stdout || stderr) {
-  //     let payload = stdout || stderr;
-  //     event.sender.send('cs-binary-output', payload);
-  //   }
-  // });
+  const csProcess = exec(`${options.root}/BINARIES/MacChatScript local login=${options.login} root=${options.root} source=${options.source}`);
+  csProcess.stdout.on('data', function(data) {
+    console.log('stdout: ' + data);
+    event.sender.send('cs-process-output', data);
+  });
+  csProcess.stderr.on('data', function(data) {
+      // console.log('stderr: ' + data);
+      //Here is where the error output goes
+  });
+  csProcess.on('close', function(code) {
+      // console.log('closing code: ' + code);
+      //Here you can get the exit code of the script
+      event.sender.send('cs-process-end', code);
+  });
+  // event.sender.send('cs-process-output', data);
 })
 
 // listen for errors

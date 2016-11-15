@@ -1,8 +1,8 @@
 module.exports = {
-    path: '/Users/samuelcousin/Development/KoreNLP/BINARIES/MacChatScript',
+    root: '/Users/samuelcousin/Development/KoreNLP',
     login: 'super_test',
     source: '/Users/samuelcousin/Development/KoreNLP/private/KORA/TESTS/sanity-qabots.tst',
     env_variable: {
-      'EXEMPLE_VAR': 'somevalue12345'
+      'NLPQA_QABOTS_AUTH': 'WA8Uc7-FBUuyU5J7rs1axtSqRgXhbSeZuGnXS1zqgX-3tIeOqgGhDPV7Ejt2DLAx'
     }
 };
