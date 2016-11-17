@@ -20,6 +20,7 @@ const resultSrcBtn = document.getElementById('result-source');
 
 // controls
 const startBtn = document.getElementById('control-start');
+const stopBtn = document.getElementById('control-stop');
 const openButtons = [binaryDirBtn, testSrcBtn, resultSrcBtn];
 
 
@@ -44,6 +45,11 @@ startBtn.addEventListener('click', (event) => {
     ipc.send('control-start-process', csConfigObject);
   }
 });
+
+stopBtn.addEventListener('click', (event) => {
+  ipc.send('control-stop-process');
+});
+
 
 
 // listeners for paths
@@ -78,6 +84,11 @@ ipc.on('cs-process-end', (event, code) => {
   console.log(`process has ended with code ${code}`)
 });
 
+// listener for csProcess kill
+ipc.on('cs-process-kill', (event, message) => {
+  // do things with result-source
+  alert(`${message}`);
+});
 
 // if we have a config file, use these values
 // de facto init function

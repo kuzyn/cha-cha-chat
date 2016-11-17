@@ -12,6 +12,8 @@ const config = require('./config.js');
 
 require('electron-reload')(__dirname);
 
+let csProcess;
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -90,6 +92,16 @@ ipc.on('open-file-dialog', function (event, element) {
   });
 })
 
+ipc.on('control-stop-process', function (event) {
+  if (csProcess) {
+    csProcess.kill();
+    csProcess = null;
+    event.sender.send('cs-process-kill', 'csProcess killed');
+  } else {
+    event.sender.send('cs-process-kill', 'csProcess is not running');
+  }
+});
+
 // listen for a start process request
 ipc.on('control-start-process', function (event, options) {
   console.log(options);
@@ -102,7 +114,7 @@ ipc.on('control-start-process', function (event, options) {
     }
   }
   
-  const csProcess = exec(`${options.root}/BINARIES/MacChatScript local login=${options.login} root=${options.root} source=${options.source}`);
+  csProcess = exec(`${options.root}/BINARIES/MacChatScript local login=${options.login} root=${options.root} source=${options.source}`);
   csProcess.stdout.on('data', function(data) {
     console.log('stdout: ' + data);
     event.sender.send('cs-process-output', data);
