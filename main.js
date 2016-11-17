@@ -78,16 +78,15 @@ app.on('activate', function () {
 // code. You can also put them in separate files and require them here.
 
 // listen for open dialog requests
-ipc.on('open-file-dialog', function (event, element) {
-  
+ipc.on('open-file-dialog', function (event, elementId, elementType) {
   let dialogOptions = {
     defaultPath: process.cwd(),
-    properties: ['openFile']
+    properties: elementType === 'dir' ? ['openDirectory'] : ['openFile']
   }
   
   dialog.showOpenDialog(dialogOptions, function (files) {
     if (files) {
-      event.sender.send(element, files);
+      event.sender.send(elementId, files);
     }
   });
 })

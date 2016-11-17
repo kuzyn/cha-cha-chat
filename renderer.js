@@ -32,7 +32,7 @@ const openButtons = [binaryDirBtn, testSrcBtn, resultSrcBtn];
 // select files btn clicks
 for (button of openButtons) {
   button.addEventListener('click', (event) => {
-    ipc.send('open-file-dialog', event.srcElement.id);
+    ipc.send('open-file-dialog', event.srcElement.id, event.srcElement.dataset.type);
   });
 }
 
@@ -55,7 +55,7 @@ stopBtn.addEventListener('click', (event) => {
 // listeners for paths
 ipc.on('chatscript-root', (event, path) => {
   // do things with chatscript-root
-  csConfigObject.path = path;
+  csConfigObject.root = path;
   document.getElementById(`chatscript-root-selected`).innerHTML = `${csConfigObject.path}`;
 });
 
