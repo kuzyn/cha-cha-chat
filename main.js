@@ -114,7 +114,10 @@ ipc.on('control-start-process', function (event, options) {
     }
   }
   
-  csProcess = exec(`${options.root}/BINARIES/MacChatScript local login=${options.login} root=${options.root} source=${options.source}`);
+  // then we decide of our binary
+  let binaryFile = process.platform === 'darwin' ? '/BINARIES/MacChatScript' : process.platform === 'linux' ? '/BINARIES/ChatScript' : '\\BINARIES\\chatscript.exe'
+  
+  csProcess = exec(`${options.root}${binaryFile} local login=${options.login} root=${options.root} source=${options.source}`);
   csProcess.stdout.on('data', function(data) {
     console.log('stdout: ' + data);
     event.sender.send('cs-process-output', data);
